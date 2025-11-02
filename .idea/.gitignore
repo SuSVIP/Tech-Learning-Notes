@@ -1,0 +1,52 @@
+# 1. Java编译产物（核心必忽略）
+*.class               # 编译生成的字节码文件
+*.jar                 # 打包生成的jar包（若为本地临时打包，非发布版本）
+*.war                 # 若涉及web模块的war包
+*.ear
+bin/                  # 部分IDE默认的编译输出目录（如Eclipse）
+target/               # Maven/Gradle的编译/打包输出目录（核心）
+build/                # Gradle的构建目录
+
+
+# 2. IDE配置文件（不同IDE按需保留）
+# IntelliJ IDEA
+.idea/                # IDEA项目配置目录
+*.iws
+*.iml                 # 模块配置文件
+*.ipr
+out/                  # IDEA的编译输出目录
+
+# Eclipse
+.classpath            # 类路径配置
+.project              # 项目配置
+.settings/            # 工作区设置
+
+# VS Code（若使用）
+.vscode/              # VS Code配置
+*.code-workspace
+
+
+# 3. 构建工具缓存/日志
+.mvn/                 # Maven wrapper缓存（若不提交wrapper，可忽略）
+gradle/               # Gradle wrapper缓存
+gradlew.bat           # 若不共享gradle wrapper，可忽略（建议提交wrapper方便协作）
+maven-status/
+*.log                 # 构建/运行日志文件
+
+
+# 4. 临时/敏感文件
+*.tmp                 # 临时文件
+*.swp                 # Vim等编辑器的临时文件
+*.swo
+.DS_Store             # Mac系统自动生成的隐藏文件
+Thumbs.db             # Windows系统自动生成的缩略图缓存
+
+# 本地配置文件（含敏感信息，如数据库密码）
+*_local.properties    # 本地环境配置（命名建议带local标识）
+*_dev.yml
+*.secret
+
+
+# 5. 测试相关（按需忽略）
+test-output/          # 测试输出目录
+surefire-reports/     # Maven测试报告目录
