@@ -2,8 +2,6 @@
 
 [Java基础](https://www.bilibili.com/video/BV1gb42177hm) → [Javaweb+AI](https://www.bilibili.com/video/BV1yGydYEE3H/) → [苍穹外卖项目](https://www.bilibili.com/video/BV1TP411v7v6) → [AI+若依框架](https://www.bilibili.com/video/BV1pf421B71v) → [微服务](https://www.bilibili.com/video/BV1S142197x7) → [黑马头条项目](https://www.bilibili.com/video/BV1Qs4y1v7x4)、[学成在线项目](https://www.bilibili.com/video/BV1j8411N7Bm/) → [Java大厂面试专题课](https://www.bilibili.com/video/BV15b4y117RJ)
 
-
-
 **Java学习路线****详细介绍**
 
 ### **第一阶段：Java基础**
