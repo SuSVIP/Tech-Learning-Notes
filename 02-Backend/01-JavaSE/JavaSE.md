@@ -102,7 +102,7 @@
 
 1. **综合实战**：完成 “简易电商商品管理系统”—— 定义 “Goods” 父类（属性：商品 ID、名称、价格；方法：展示信息），“Electronics”（电子商品，新增属性：品牌）、“Clothes”（服装，新增属性：尺码）子类继承 Goods；定义 “Cart” 类（属性：商品列表（Goods 数组），方法：添加商品、计算总价、展示购物车），实现多态调用。
 
-# 第三周：Java SE 进阶（异常 + 集合 + IO + 常用 API）
+# 第三周：Java SE 进阶（异常 + 集合 + IO + 常用 API+ 网络编程）
 
 ## 第 15 天：异常处理
 
@@ -114,23 +114,33 @@
 
 1. **实践**：编写 “银行账户转账” 程序 —— 模拟转账时可能出现的 “余额不足异常”“账号不存在异常”，用 try-catch 处理，自定义 “InsufficientBalanceException” 异常。
 
-## 第 16 天：集合框架（List 与 Set）
+## 第 16 天：集合框架（List/Set）+ 泛型
 
 1. **集合的意义**：理解集合与数组的区别（集合大小可变，支持泛型，存储引用类型），掌握 Collection 接口的体系（Collection→List/Set，List 有序可重复，Set 无序不可重复）。
 
-1. **List 接口**：学习 ArrayList（底层数组，查询快、增删慢）和 LinkedList（底层链表，增删快、查询慢）的使用，掌握常用方法（add ()、get ()、remove ()、size ()、contains ()），理解泛型（List<String> list = new ArrayList<>()，限制存储类型，避免类型转换异常）。
+1. **集合框架（List）**：学习 ArrayList（底层数组，查询快、增删慢）和 LinkedList（底层链表，增删快、查询慢）的使用，掌握常用方法（add ()、get ()、remove ()、size ()、contains ()），理解泛型（List<String> list = new ArrayList<>()，限制存储类型，避免类型转换异常）。
 
-1. **Set 接口**：学习 HashSet（底层哈希表，无序不可重复，依赖 equals () 和 hashCode () 判断重复）和 TreeSet（底层红黑树，有序不可重复，需实现 Comparable 接口或传入 Comparator）的使用。
+1. **集合框架（Set）**：学习 HashSet（底层哈希表，无序不可重复，依赖 equals () 和 hashCode () 判断重复）和 TreeSet（底层红黑树，有序不可重复，需实现 Comparable 接口或传入 Comparator）的使用。
 
-1. **实践**：用 ArrayList 存储 10 个随机整数，去重（转为 HashSet 再转回 ArrayList），排序（Collections.sort ()）；用 TreeSet 存储 Student 对象，按成绩降序排列。
+1. **泛型核心**：理解泛型的设计目的（类型安全、避免类型转换），掌握泛型类（`class GenericClass<T>`）、泛型方法（`public <T> T method(T param)`）、泛型接口（`interface GenericInterface<T>`）的定义与使用。
 
-## 第 17 天：集合框架（Map）
+1. **泛型通配符**：学习无界通配符（`?`）、上界通配符（`? extends T`，生产者场景）、下界通配符（`? super T`，消费者场景），掌握 PECS 原则的实际应用。
 
-1. **Map 接口**：理解 Map 的结构（键值对（key-value），key 唯一，value 可重复），区别于 Collection（单列集合），Map 是双列集合。
+1. **类型擦除**：了解泛型的底层实现（编译时擦除为原始类型），规避常见坑点（如泛型数组创建、运行时类型判断）。
+
+1. **实践**：用 ArrayList 存储 10 个随机整数，去重（转为 HashSet 再转回 ArrayList），排序（Collections.sort ()）；用 TreeSet 存储 Student 对象，按成绩降序排列。自定义泛型工具类（实现任意引用类型数组的排序）；用上界通配符实现数值类型集合求和；用下界通配符实现整数批量插入集合。
+
+## 第 17 天：集合框架（Map）+ 枚举
+
+1. **集合框架（Map）**：理解 Map 的结构（键值对（key-value），key 唯一，value 可重复），区别于 Collection（单列集合），Map 是双列集合。
+
+1. **枚举（Enum）**：理解枚举的本质（特殊的类，继承 Enum 类），掌握枚举的定义（`enum 枚举名 { 常量1, 常量2 }`）、属性与构造方法（私有构造）。
+
+1. **枚举应用**：学习枚举的常用场景（固定常量集、状态管理、业务规则定义），掌握枚举的常用方法（`values()` 遍历、`name()` 获取名称、`ordinal()` 获取索引）。
 
 1. **常用实现类**：学习 HashMap（底层哈希表，无序，线程不安全，效率高）和 TreeMap（底层红黑树，按 key 有序，需实现 Comparable）的使用，掌握常用方法（put ()、get ()、remove ()、containsKey ()、keySet ()（获取所有 key）、entrySet ()（获取所有键值对））。
 
-1. **实践**：用 HashMap 统计字符串中每个字符出现的次数（key 为字符，value 为次数）；用 TreeMap 存储 “学生姓名 - 成绩”，按成绩升序输出。
+1. **实践**：用 HashMap 统计字符串中每个字符出现的次数（key 为字符，value 为次数）；用 TreeMap 存储 “学生姓名 - 成绩”，按成绩升序输出。用 TreeMap 存储枚举类型作为 key，实现按枚举顺序排序；定义 “支付方式枚举”（微信、支付宝、银行卡），包含支付费率属性与计算支付金额的方法；用枚举结合 switch 实现业务流程分支。
 
 ## 第 18 天：IO 流（字节流与字符流）
 
@@ -142,7 +152,7 @@
 
 1. **实践**：用 FileInputStream+FileOutputStream 复制一张图片；用 FileReader+FileWriter 读取 “test.txt” 的内容，添加 “—— 已处理” 后写入 “test_copy.txt”。
 
-## 第 19 天：常用 API（String、Date、包装类）
+## 第 19 天：内部类 + 常用 API（String、Date、包装类）
 
 1. **String 类**：掌握 String 的常用方法（length ()、charAt ()、substring ()、equals ()、equalsIgnoreCase ()、indexOf ()、replace ()、split ()），理解 String 的不可变性（每次修改都会创建新对象）。
 
@@ -150,7 +160,28 @@
 
 1. **Date 与 SimpleDateFormat**：学习 Date 类（表示时间）和 SimpleDateFormat 类（格式化时间，如yyyy-MM-dd HH:mm:ss），实现 “获取当前时间并格式化输出”“将字符串时间转为 Date 对象”。
 
-1. **实践**：编写 “字符串处理工具类”—— 实现 “判断字符串是否为手机号”（用 substring+charAt）、“统计字符串中大写字母个数”；编写 “时间工具类”—— 获取当前时间（格式：2024-05-20 14:30:00），计算两个时间的间隔（如 “2024-05-01” 到 “2024-05-20” 的天数）。
+1. **内部类**：掌握四种内部类的定义与使用场景。
+   - 成员内部类：依赖外部类实例，可访问外部类所有成员，创建方式 `外部类对象.new 内部类()`。
+   - 静态内部类：不依赖外部类实例，仅访问外部类静态成员，创建方式 `外部类.内部类()`。
+   - 局部内部类：定义在方法内，作用域仅限方法内部，访问局部变量需为有效 final。
+   - 匿名内部类：无类名，直接实例化接口 / 抽象类，适用于一次性使用场景。
+
+1. **实践**：编写 “字符串处理工具类”—— 实现 “判断字符串是否为手机号”（用 substring+charAt）、“统计字符串中大写字母个数”；编写 “时间工具类”—— 获取当前时间（格式：2024-05-20 14:30:00），计算两个时间的间隔（如 “2024-05-01” 到 “2024-05-20” 的天数）。用匿名内部类实现 Runnable 接口创建线程；用成员内部类实现集合的自定义迭代器；编写字符串工具类（实现手机号脱敏、邮箱格式校验）。
+
+## 第 20 天：多线程 + 注解
+
+1. **多线程核心**：理解进程与线程的区别，线程的 6 种状态（NEW、RUNNABLE、BLOCKED、WAITING、TIMED_WAITING、TERMINATED）及状态转换。
+2. **线程创建**：掌握三种创建方式（继承 Thread 类、实现 Runnable 接口、Callable + Future），对比各自优缺点。
+3. **线程同步**：学习线程安全问题的产生原因，掌握 synchronized 关键字（同步方法、同步代码块）、Lock 锁（ReentrantLock）的使用。
+4. **注解**：理解注解的本质（特殊接口），掌握内置注解（`@Override`、`@Deprecated`），学习自定义注解（`@interface` 关键字）与元注解（`@Target` 限定使用范围、`@Retention` 指定生命周期）。
+5. **实践**：实现线程安全的售票系统（解决超卖问题）；自定义 “日志注解”（`@Log`），标注在方法上用于记录方法执行时间；用 Callable + Future 实现多线程计算斐波那契数列。
+
+## 第 21 天：反射 + 网络编程 
+
+1. **反射（Reflection）**：理解反射的核心（运行时获取类信息、操作类成员），掌握 Class 类的获取方式（`Class.forName()`、`对象.getClass()`、`类名.class`）。
+2. **反射操作**：学习通过反射获取类的属性（Field）、方法（Method）、构造方法，实现动态调用方法、修改属性值（包括私有成员）。
+3. **网络编程（TCP）**：理解 TCP 协议的特点（面向连接、可靠传输），掌握 ServerSocket（服务器端监听）与 Socket（客户端连接）的使用，实现客户端与服务器的双向通信。
+4. **实践**：通过反射操作 Student 类，动态调用私有方法；实现简单 TCP 聊天程序（服务器转发客户端消息）；优化 “学生信息管理系统”，加入反射解析日志注解、多线程处理文件读写、网络查询功能。
 
 ## 第 20-21 天：第三周复盘与综合项目
 
@@ -177,3 +208,4 @@
 1. **解决问题**：遇到不会的问题，先查官方文档（[Java API 文档](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/)）或 Stack Overflow，培养独立解决问题的能力。
 
 1. **复盘总结**：每天结束前花 30 分钟回顾当天知识点，每周结束后做 1-2 道综合题，检验学习效果。
+
