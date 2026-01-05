@@ -21,30 +21,28 @@
    ufw allow 9100/tcp
    ufw reload
    ```
+
    
-   
-   
+
 2. **安装必备工具**：JDK 11+、Maven、Git、Docker（可选，简化部署）
 
    ```bash
-# CentOS 安装
+   # CentOS 安装
    yum install -y java-11-openjdk-devel maven git docker
-systemctl start docker && systemctl enable docker
+   systemctl start docker && systemctl enable docker
    
-# Ubuntu 安装
+   # Ubuntu 安装
    apt update && apt install -y openjdk-11-jdk maven git docker.io
-systemctl start docker && systemctl enable docker
+   systemctl start docker && systemctl enable docker
    ```
 
-   
+ 3. **验证安装**
 
-3. **验证安装**
+    ```bash
+    java -version && mvn -v && git --version && docker --version
+    ```
 
-   ```bash
-   java -version && mvn -v && git --version && docker --version
-   ```
 
-   
 
 ## 二、 选择并拉取 GitHub 开源 Spring Boot 项目
 
@@ -53,10 +51,12 @@ systemctl start docker && systemctl enable docker
 ```bash
 # 克隆项目到本地
 git clone https://github.com/xkcoding/spring-boot-demo.git
-cd spring-boot-demo/spring-boot-demo-helloworld
+cd spring-boot-demo/demo-helloworld
 ```
 
-> 也可以自选其他项目，比如小说爬虫类：`git clone https://github.com/your-favorite-novel-crawler.git`，注意查看项目 README 的部署要求。
+> 也可以自选其他项目，注意查看项目 README 的部署要求。
+
+opt/projects/report/report-core/src/main/resources
 
 ## 三、 编译并部署开源项目
 
@@ -71,43 +71,41 @@ cd spring-boot-demo/spring-boot-demo-helloworld
    ls target/
    ```
    
-   
-   
 2. **后台运行项目**
 
    ```bash
    # 后台运行，日志输出到 app.log
-   nohup java -jar target/spring-boot-demo-helloworld-2.3.0.RELEASE.jar > app.log 2>&1 &
+   #nohup java -jar target/spring-boot-demo-helloworld-2.3.0.RELEASE.jar > app.log 2>&1 &
+   nohup java -jar target/demo-helloworld.jar > app.log 2>&1 &
    ```
    
+   查看日志输出：
    
+   ```bash
+   tail -f app.log
+   ```
+   
+   - 应用已通过`nohup`后台启动，日志会写入`app.log`，可通过`tail -f app.log`查看启动状态；
+   - 若仍报错，可检查`app.log`中是否有接口映射、端口占用等异常信息。
    
 3. **验证部署**
 
    ```bash
-# 查看进程
+   # 查看进程
    ps -ef | grep java
-# 访问项目接口（替换为服务器 IP）
-   curl http://服务器IP:8080/hello
-# 若返回 "Hello World!" 则部署成功
+   # 访问项目接口（替换为服务器 IP）
+   curl http://服务器IP:8080/demo/hello
+   # 若返回 "Hello World!" 则部署成功
    ```
-
-   
 
 4. **设置开机自启（系统服务）**
 
-   
+   创建服务文件`/etc/systemd/system/spring-boot-demo.service`
 
-   创建服务文件
-
-    
-
+   ```bash
+   vi /etc/systemd/system/spring-boot-demo.service
    ```
-   /etc/systemd/system/spring-boot-demo.service
-   ```
-
    
-
    ```ini
    [Unit]
    Description=Spring Boot Demo Service
@@ -115,8 +113,8 @@ cd spring-boot-demo/spring-boot-demo-helloworld
    
    [Service]
    User=root
-   WorkingDirectory=/root/spring-boot-demo/spring-boot-demo-helloworld
-   ExecStart=/usr/bin/java -jar target/spring-boot-demo-helloworld-2.3.0.RELEASE.jar
+   WorkingDirectory=/root/spring-boot-demo/demo-helloworld
+   ExecStart=/usr/bin/java -jar target/demo-helloworld.jar
    Restart=always
    RestartSec=5
    
@@ -124,11 +122,7 @@ cd spring-boot-demo/spring-boot-demo-helloworld
    WantedBy=multi-user.target
    ```
    
-   
-   
    启动并设置开机自启：
-   
-   
    
    ```bash
    systemctl daemon-reload
@@ -137,14 +131,13 @@ cd spring-boot-demo/spring-boot-demo-helloworld
    # 查看状态
    systemctl status spring-boot-demo
    ```
-
    
+
+
 
 ### 方式 2：Docker 部署（推荐，简化环境依赖）
 
 1. **查看项目 Dockerfile**：若项目自带 `Dockerfile`，直接构建；若无，手动创建：
-
-   
 
    ```dockerfile
 FROM openjdk:11-jre-slim
@@ -154,11 +147,7 @@ COPY target/spring-boot-demo-helloworld-2.3.0.RELEASE.jar app.jar
 ENTRYPOINT ["java","-jar","/app/app.jar"]
    ```
 
-   
-
 2. **构建并运行 Docker 镜像**
-
-   
 
    ```bash
    # 构建镜像
@@ -171,16 +160,11 @@ ENTRYPOINT ["java","-jar","/app/app.jar"]
    
 3. **验证 Docker 部署**
 
-   
-
    ```bash
-# 查看容器状态
-   docker ps
-# 访问接口
-   curl http://服务器IP:8080/hello
-```
-   
-
+   # 构建镜像
+   docker build -t spring-boot-demo:v1 .
+   # 运行容器
+   docker run -d -p 8080:8080 --name demo-app spring-boot-demo:v1
 
 ## 四、 搭建监控系统（Prometheus + Grafana + 开源 Exporter）
 
@@ -201,10 +185,9 @@ ENTRYPOINT ["java","-jar","/app/app.jar"]
        <groupId>io.micrometer</groupId>
        <artifactId>micrometer-registry-prometheus</artifactId>
    </dependency>
-   ```
+
    
-   
-   
+
 2. 编辑 `application.yml`，开启监控端点：
 
    ```yaml
@@ -224,11 +207,8 @@ ENTRYPOINT ["java","-jar","/app/app.jar"]
 3. 重新打包部署项目，验证监控端点：
 
    ```bash
-curl http://服务器IP:8080/actuator/prometheus
+   curl http://服务器IP:8080/actuator/prometheus
    # 若返回大量指标数据则配置成功
-```
-   
-
 
 ### 步骤 2：安装 Prometheus（GitHub 开源）
 
@@ -239,10 +219,7 @@ curl http://服务器IP:8080/actuator/prometheus
    wget https://github.com/prometheus/prometheus/releases/download/v2.53.1/prometheus-2.53.1.linux-amd64.tar.gz
    tar -zxvf prometheus-2.53.1.linux-amd64.tar.gz
    mv prometheus-2.53.1.linux-amd64 /usr/local/prometheus
-   ```
-   
-   
-   
+
 2. **修改 Prometheus 配置文件** `/usr/local/prometheus/prometheus.yml`
 
    ```yaml
@@ -263,17 +240,11 @@ curl http://服务器IP:8080/actuator/prometheus
          - targets: ["服务器IP:9100"]
    ```
    
-   
-   
 3. **后台启动 Prometheus**
-
-   
 
    ```bash
 nohup /usr/local/prometheus/prometheus --config.file=/usr/local/prometheus/prometheus.yml > prometheus.log 2>&1 &
    ```
-
-   
 
 4. **验证 Prometheus**：访问 `http://服务器IP:9090`，进入 `Status -> Targets`，查看所有监控目标是否为 `UP` 状态。
 
@@ -295,16 +266,13 @@ nohup /usr/local/node_exporter/node_exporter > node_exporter.log 2>&1 &
 1. **下载并安装 Grafana**
 
    ```bash
-# CentOS 安装
+   # CentOS 安装
    wget https://dl.grafana.com/oss/release/grafana-11.2.0-1.x86_64.rpm
-yum install -y grafana-11.2.0-1.x86_64.rpm
+   yum install -y grafana-11.2.0-1.x86_64.rpm
    
-# Ubuntu 安装
+   # Ubuntu 安装
    wget https://dl.grafana.com/oss/release/grafana_11.2.0_amd64.deb
-dpkg -i grafana_11.2.0_amd64.deb
-   ```
-
-   
+   dpkg -i grafana_11.2.0_amd64.deb
 
 2. **启动 Grafana 并设置开机自启**
 
@@ -312,9 +280,7 @@ dpkg -i grafana_11.2.0_amd64.deb
    systemctl start grafana-server
    systemctl enable grafana-server
    ```
-   
-   
-   
+
 3. **配置 Grafana**
 
    - 访问 `http://服务器IP:3000`，默认账号密码 `admin/admin`，登录后修改密码。
@@ -344,9 +310,120 @@ systemctl restart spring-boot-demo
 docker stop demo-app
 ```
 
-------
-
-是否需要我帮你整理**开源项目部署的通用排错步骤**，涵盖代码拉取失败、编译报错、服务启动异常等问题的解决方法？
 
 
+# 六
+
+## 验证端口是否被占用
+
+可通过以下命令检查 8080 端口是否被其他程序占用：
+
+```bash
+# 查看8080端口的占用情况
+netstat -tulpn | grep 8080
+```
+
+## 查看进程
+
+```bash
+# 查看进程
+ps -ef | grep java
+```
+
+## 防火墙开放 3306 端口
+
+即使之前开放过，可能存在配置未生效的情况：
+
+```bash
+# 检查3306端口是否开放
+firewall-cmd --list-ports
+
+# 若未开放，重新添加并重载
+firewall-cmd --add-port=3306/tcp --permanent
+firewall-cmd --reload
+```
+
+## 重启 MySQL 服务
+
+```bash
+systemctl restart mysqld
+```
+
+## 查看MySQL状态
+
+systemctl status [服务名称]
+
+```bash
+systemctl status mysqld
+```
+
+```bash
+● mysqld.service - MySQL Server
+     Loaded: loaded (/usr/lib/systemd/system/mysqld.service; enabled; preset: disabled)
+     Active: active (running) since Sat 2026-01-03 01:43:48 CST; 1 day 19h ago
+       Docs: man:mysqld(8)
+             http://dev.mysql.com/doc/refman/en/using-systemd.html
+   Main PID: 93772 (mysqld)
+     Status: "Server is operational"
+      Tasks: 42 (limit: 10308)
+     Memory: 47.3M (peak: 483.8M)
+        CPU: 11min 21.137s
+     CGroup: /system.slice/mysqld.s
+     
+     ervice
+             └─93772 /usr/sbin/mysqld
+
+1月 03 01:43:46 localhost.localdomain systemd[1]: Starting MySQL Server...
+1月 03 01:43:48 localhost.localdomain systemd[1]: Started MySQL Server.
+```
+
+
+
+## 删除服务（以spring-boot-demo的demo-email为例）
+
+要删除`demo-email`服务，需彻底清理进程、文件和相关配置，步骤如下：
+
+### 1. 停止并清理服务进程
+
+```bash
+# 1. 查找demo-email的进程ID
+ps -ef | grep demo-email.jar
+
+# 2. 强制终止进程（替换<PID>为实际查到的进程号）
+kill -9 <PID>
+
+# 3. 验证进程已终止（无输出则清理完成）
+ps -ef | grep demo-email.jar
+```
+
+### 2. 删除服务相关文件
+
+```bash
+# 1. 进入spring-boot-demo目录（若在其他路径则替换）
+cd spring-boot-demo
+
+# 2. 删除demo-email模块目录（彻底移除项目文件）
+rm -rf demo-email
+```
+
+### 3. 清理日志与临时文件（可选）
+
+```bash
+# 删除服务日志文件
+rm -f email.log
+```
+
+完成以上操作后，`demo-email`服务的进程、文件已被完全删除。
+
+
+
+## 查找文件
+
+```bash
+# 进入项目根目录
+cd /opt/projects/Demo
+
+# 查找Demo.java文件
+find . -name "Demo.java"
+```
 
